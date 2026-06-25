@@ -1,0 +1,243 @@
+/* stylelint-disable */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===================== 全局交互优化 ===================== */
+
+/* 1. 移除移动端点击高亮（仅 WebKit） */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 2. 焦点样式：键盘导航显示蓝色外圈，鼠标点击无轮廓 */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 3. 优化文本选择：大部分界面元素不可选中，输入控件保留选择能力 */
+button,
+a,
+li,
+span,
+[role="menuitem"],
+[role="button"],
+.sidebar-item,
+.card-item {
+  user-select: none;
+  -webkit-user-select: none;
+}
+input,
+textarea,
+select {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* 4. 侧边栏聚焦样式覆盖（避免突兀的浏览器默认轮廓） */
+[data-sidebar-item]:focus-visible {
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.3);
+  outline: none !important;
+}
+
+/* 5. 移动端优化：防止双击缩放，提升点击响应 */
+html {
+  touch-action: manipulation;
+}
+
+/* ===================== 自定义组件层 ===================== */
+@layer components {
+  /* 通用卡片样式 */
+  .app-card {
+    @apply bg-card rounded-xl border border-border transition-all duration-200;
+    box-shadow: var(--shadow-card);
+  }
+  .app-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  /* 页面头部 */
+  .page-header {
+    @apply bg-white border-b border-border px-6 py-3 shrink-0;
+  }
+
+  /* 信息提示面板（如周期说明） */
+  .info-panel {
+    @apply rounded-xl p-5 border border-blue-200 dark:border-blue-900;
+    background: linear-gradient(135deg, hsl(var(--info) / 0.08), hsl(var(--info) / 0.02));
+  }
+
+  /* 侧边栏激活项：仅文字高亮，无背景/边框 */
+  [data-sidebar-menu] [data-active="true"] {
+    @apply bg-transparent;
+  }
+  [data-sidebar-menu] [data-active="true"] span {
+    @apply text-[hsl(var(--sidebar-primary))] font-semibold;
+  }
+}
+
+/* ===================== 主题变量定义 ===================== */
+@layer base {
+  :root {
+    /* 基础色 */
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --border: 214 20% 89%;
+    --input: 214 20% 89%;
+    --ring: 221 83% 53%;
+
+    /* 主题色 */
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 16% 40%;
+    --accent: 214 32% 91%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* 状态色 */
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --info: 221 83% 53%;
+
+    /* 图表色 */
+    --chart-1: 221 83% 53%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 0 84% 60%;
+
+    /* 渐变 */
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(230 89% 62%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(214 32% 97%));
+    --gradient-background: linear-gradient(180deg, hsl(210 20% 98%), hsl(214 32% 96%));
+
+    /* 阴影 */
+    --shadow-card: 0 1px 3px 0 hsl(221 83% 53% / 0.08), 0 1px 2px -1px hsl(221 83% 53% / 0.06);
+    --shadow-hover: 0 4px 12px 0 hsl(221 83% 53% / 0.15);
+
+    /* 侧边栏 */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 221 83% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 40% 18%;
+    --sidebar-accent-foreground: 210 40% 95%;
+    --sidebar-border: 222 40% 18%;
+    --sidebar-ring: 221 83% 53%;
+
+    /* 辅助变量 */
+    --radius: 0.25rem;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 96%;
+    --border: 222 32% 18%;
+    --input: 222 32% 18%;
+    --ring: 221 83% 58%;
+
+    --primary: 221 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 32% 16%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 222 32% 16%;
+    --muted-foreground: 215 20% 62%;
+    --accent: 222 32% 16%;
+    --accent-foreground: 210 40% 96%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 210 40% 96%;
+
+    --success: 142 60% 40%;
+    --warning: 38 80% 45%;
+    --info: 221 83% 58%;
+
+    --chart-1: 221 83% 60%;
+    --chart-2: 142 60% 45%;
+    --chart-3: 38 80% 50%;
+    --chart-4: 280 60% 55%;
+    --chart-5: 0 70% 55%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 50%), hsl(230 89% 58%));
+    --gradient-card: linear-gradient(135deg, hsl(222 47% 9%), hsl(222 40% 12%));
+    --gradient-background: linear-gradient(180deg, hsl(222 47% 6%), hsl(222 40% 8%));
+
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.35), 0 1px 2px -1px hsl(0 0% 0% / 0.25);
+    --shadow-hover: 0 4px 12px 0 hsl(0 0% 0% / 0.45);
+
+    --sidebar-background: 222 47% 7%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 221 83% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 40% 14%;
+    --sidebar-accent-foreground: 210 40% 95%;
+    --sidebar-border: 222 40% 14%;
+    --sidebar-ring: 221 83% 58%;
+  }
+
+  /* 全局边框与字体 */
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 轻量级滚动条（兼容 Chrome/Firefox） */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+@keyframes shake {
+  0%,
+  100% { transform: translateX(0); }
+  10% { transform: translateX(-6px); }
+  20% { transform: translateX(6px); }
+  30% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  50% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+  70% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+  90% { transform: translateX(-6px); }
+}
+
+.shaking-text {
+  display: inline-block;
+  animation: shake 2.2s ease-in-out 1; /* 晃动 3 次，总共约 2.4 秒 */
+}
